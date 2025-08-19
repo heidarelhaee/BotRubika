@@ -163,8 +163,22 @@ class BotRubika
         if ($chatKeypad) $payload["chat_keypad"] = $chatKeypad->toArray();
         return $this->call("editChatKeypad", $payload);
     }
+    
+    public function getFile($fileId, $chatId)
+    {
+        $payload = [
+            "file_id" => $fileId,
+            "chat_id" => $chatId
+        ];
+        $response = $this->call("getFile", $payload);
+        if (isset($response['data']['download_url'])) {
+            return $response['data']['download_url'];
+        }
+        return null;
+    }
 }
 
+// ======== مدل‌ها ========
 class BotRubika_Keypad {
     private $rows = [];
     private $resizeKeyboard = null;
@@ -224,6 +238,7 @@ class BotRubika_InlineKeypad {
     public function toArray() { return ["rows" => array_map(fn($r) => $r->toArray(), $this->rows)]; }
 }
 
+// ======== وبهوک ========
 class BotRubika_Webhook {
     public static function readJsonBody() {
         $input = file_get_contents('php://input');
